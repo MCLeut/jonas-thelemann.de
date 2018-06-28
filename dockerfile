@@ -1,15 +1,10 @@
 # Base image
-FROM node:9 AS node
-
-# PHP7.2 package list (workaround for dependency)
-RUN apt-get update && apt-get install -y apt-transport-https lsb-release ca-certificates
-RUN wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
-RUN echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/php.list
+FROM node AS node
 
 # Update and upgrade
 RUN \
     apt-get update && \
-    apt-get install -y php7.2 unzip
+    apt-get install -y php unzip
 
 WORKDIR /app
 
