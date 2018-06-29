@@ -21,7 +21,8 @@ before_install:
 - yarn global add greenkeeper-lockfile@1
 before_script:
 - greenkeeper-lockfile-update
-script: docker build -f dockerfile -t $REPO:$COMMIT .
+script:
+- docker build -f dockerfile -t $REPO:$COMMIT .
 after_script:
 - greenkeeper-lockfile-upload
 after_success:
