@@ -8,7 +8,16 @@ env:
   - secure: QL7LGf7ZRC6488qxYE+v6HHfF/xjrZ2rqGjZ1OCcqHRlKi/R2j1+JM8otnxKKXBVyoyGUEGNruI8NtourtnQwrTysRPaBeuJE1cYNX6aWogBp2Trkkzw24JLtlfN8mSKPgLqX4//mjPegjF+5RpnQaW4/L4QfFt0/RoBYxGlwtJY/0qRDgboi33a5ze33ikFlpPxJKu6rfM5FDccxyvbLyiyt3tfYoSIPvZRsgci+QQGAzwv49jWz0Pr3Wl3Ga2YuW3xd27awPzmlHZcSzHMH+ga0ieuezkg7p1L/LQyS+pmzYud/EAlgJU3YDG099UKODqJLYJbuYJQraMccjN7YjHM6viiEabGeEFREoAdki9Lh2yt9DWs3QsYOAG+2G01S/RrVcicv3l2w6V49o0Zfr8sDszH/yOYNjOEYUGoT4HNhDl8rSTMu8vikF/RJJ2UoxUh2nSU/YZOjDmo5g4oa+JR8pWHtMNTsxPEr4yWzv73vK3NAWwskdU8XDl9r2+EbAhruPzf3Jwur3u6zo3gaCj4H6VdDSVNXBSuMC9vI2UiNtV8Uh1//CUInVwZdF0VRNi1PFDxo87DqXBPRnHQd0ERw7Wew82AMjH/Pk1avhr/Wxq/6DhqFaYklhQQWt4e1VTV1hgnNg4RozmBXR1TFJsxCqvV5kMYODnGAqqaQaY= #GH_TOKEN (Greenkeeper)
   - COMMIT=${TRAVIS_COMMIT::8}
   - REPO=dargmuesli/jonas-thelemann.de
+before_cache:
+  - >
+    mkdir -p $HOME/docker && docker images -a --filter='dangling=false' --format '{{.Repository}}:{{.Tag}} {{.ID}}'
+    | xargs -n 2 -t sh -c 'test -e $HOME/docker/$1.tar.gz || docker save $0 | gzip -2 > $HOME/docker/$1.tar.gz'
+cache:
+  bundler: true
+  directories:
+    - $HOME/docker
 before_install:
+- if [[ -d $HOME/docker ]]; then ls $HOME/docker/*.tar.gz | xargs -I {file} sh -c "zcat {file} | docker load"; fi
 - yarn global add greenkeeper-lockfile@1
 before_script:
 - greenkeeper-lockfile-update
